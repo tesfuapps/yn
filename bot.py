@@ -10,6 +10,15 @@ import asyncio
 import logging
 import sys
 
+# Windows consoles default to cp1252, which crashes on emoji in log
+# lines (e.g. "⏰ Background scheduler started."). Force UTF-8 so
+# logging never raises UnicodeEncodeError on Windows.
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
